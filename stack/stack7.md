@@ -1,6 +1,6 @@
-# Stack7
+# stack7
 
-## Solution
+## solution
 ```py
 import struct
 
@@ -30,9 +30,9 @@ input path please: got path AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
 uid=1001(user) gid=1001(user) euid=0(root) groups=0(root),1001(user)
 ```
 
-## Shells
+## shells
 
-### Rop Chain to Libc
+### ret2libc
 ```py
 import struct
 
@@ -57,7 +57,7 @@ id
 uid=1001(user) gid=1001(user) euid=0(root) groups=0(root),1001(user)
 ```
 
-### Ret2.text to Shellcode
+### ret2.text to shellcode
 ```py
 import struct
 
@@ -90,7 +90,7 @@ input path please: got path AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
 uid=1001(user) gid=1001(user) euid=0(root) groups=0(root),1001(user)
 ```
 
-### Ret2.text to Libc
+### ret2.text to libc
 ```py
 import struct
 
